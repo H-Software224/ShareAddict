@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- 선택된 상태 -->
+    <item android:state_checked="true">
+        <shape android:shape="rectangle">
+            <solid android:color="#8800AA" /> <!-- 진한 보라색 -->
+            <corners android:radius="12dp" />
+        </shape>
+    </item>
+
+    <!-- 비선택 상태 -->
+    <item>
+        <shape android:shape="rectangle">
+            <solid android:color="#F4B6E2" /> <!-- 연한 분홍 -->
+            <corners android:radius="12dp" />
+        </shape>
+    </item>
+</selector>
