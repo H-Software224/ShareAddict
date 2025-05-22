@@ -1,15 +1,15 @@
 package com.example.ch13_activity
 
-import android.app.Activity
-import android.app.AlertDialog
-import android.app.DatePickerDialog
-import android.app.TimePickerDialog
+import android.app.*
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
 import android.widget.ArrayAdapter
 import android.widget.ListView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.NotificationCompat
 import com.example.ch13_activity.databinding.ActivityAddBinding
 import java.util.*
 
@@ -30,14 +30,13 @@ class AddActivity : AppCompatActivity() {
 
         setSupportActionBar(binding.toolbar)
 
-        // 날짜 및 시간 선택 버튼
+        // 날짜 및 시간 선택
         binding.btnPickStart.setOnClickListener { pickDateTime(true) }
         binding.btnPickEnd.setOnClickListener { pickDateTime(false) }
 
-        // ✅ 앱 선택 버튼 클릭 → 설치된 전체 앱 표시
+        // 앱 선택 버튼 클릭
         binding.ivArrow.setOnClickListener {
             val pm = packageManager
-
             val apps = pm.getInstalledApplications(PackageManager.GET_META_DATA)
                 .map {
                     AppInfo(
@@ -92,12 +91,17 @@ class AddActivity : AppCompatActivity() {
             resultIntent.putStringArrayListExtra("days", ArrayList(selectedDays))
 
             setResult(Activity.RESULT_OK, resultIntent)
+
+            // ✅ 위반 시간 체크 + 알림 테스트
+            checkViolationAndNotify(this, selectedAppPackage ?: "", startMillis, endMillis)
+
             finish()
         }
     }
 
+    // 날짜 및 시간 선택
     private fun pickDateTime(isStart: Boolean) {
-        //val now = Calendar.getInstance()
+        // 사용자 직접 선택 유도: 현재 시간 자동 설정 없음
         DatePickerDialog(this, { _, year, month, day ->
             TimePickerDialog(this, { _, hour, minute ->
                 val cal = Calendar.getInstance()
@@ -110,7 +114,36 @@ class AddActivity : AppCompatActivity() {
                     endMillis = cal.timeInMillis
                     binding.tvRangePreview.append("\n종료: ${Date(endMillis)}")
                 }
-            }, 0, 0, true).show()
+            }, 12, 0, true).show()
         }, 2025, 0, 1).show()
+    }
+
+    // ✅ 위반 시간에 알림 발생
+    private fun checkViolationAndNotify(context: Context, selectedPackage: String, start: Long, end: Long) {
+        val now = System.currentTimeMillis()
+        if (now in start..end) {
+            val manager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            val channelId = "violation-channel"
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                val channel = NotificationChannel(
+                    channelId,
+                    "Violation Channel",
+                    NotificationManager.IMPORTANCE_HIGH
+                ).apply {
+                    description = "앱 미사용 시간대 위반 알림"
+                }
+                manager.createNotificationChannel(channel)
+            }
+
+            val builder = NotificationCompat.Builder(context, channelId)
+                .setSmallIcon(R.drawable.small) // 🔔 아이콘 반드시 필요!
+                .setContentTitle("사용 금지 앱 감지됨")
+                .setContentText("앱 [$selectedPackage]이 금지 시간에 열렸습니다.")
+                .setPriority(NotificationCompat.PRIORITY_HIGH)
+                .setAutoCancel(true)
+
+            manager.notify(1001, builder.build())
+        }
     }
 }
