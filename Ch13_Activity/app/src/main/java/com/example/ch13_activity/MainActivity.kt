@@ -31,9 +31,11 @@ class MainActivity : AppCompatActivity() {
                 val title = data.getStringExtra("title") ?: ""
                 val start = data.getStringExtra("startTime") ?: ""
                 val end = data.getStringExtra("endTime") ?: ""
+                val startDate = data.getLongExtra("startDateTime", 0L)
+                val endDate = data.getLongExtra("endDateTime", 0L)
                 val days = data.getStringArrayListExtra("days") ?: arrayListOf()
 
-                val todo = Todo(title, start, end, days)
+                val todo = Todo(title, days, start, end, startDate, endDate)
                 datas?.add(todo)
                 adapter.notifyItemInserted(datas!!.size - 1)
             }
@@ -55,26 +57,15 @@ class MainActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        val today = getTodayLabel() // 예: "수"
+        val nowMillis = System.currentTimeMillis()
+        val today = getTodayLabel()
 
         datas?.forEach { todo ->
             if (!todo.days.contains(today)) {
                 Toast.makeText(this, "⚠️ 요일 위반: ${todo.title}", Toast.LENGTH_SHORT).show()
-            } else if (!isNowWithinRange(todo.startTime, todo.endTime)) {
-                Toast.makeText(this, "⚠️ 시간 위반: ${todo.title}", Toast.LENGTH_SHORT).show()
+            } else if (!(nowMillis in todo.startDateTime..todo.endDateTime)) {
+                Toast.makeText(this, "⚠️ 날짜/시간 위반: ${todo.title}", Toast.LENGTH_SHORT).show()
             }
-        }
-    }
-
-    private fun isNowWithinRange(start: String, end: String): Boolean {
-        return try {
-            val format = SimpleDateFormat("HH:mm", Locale.getDefault())
-            val now = format.parse(format.format(Date()))!!
-            val startTime = format.parse(start)
-            val endTime = format.parse(end)
-            now >= startTime && now <= endTime
-        } catch (e: Exception) {
-            false
         }
     }
 

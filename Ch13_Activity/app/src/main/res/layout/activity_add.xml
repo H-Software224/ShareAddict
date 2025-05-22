@@ -5,6 +5,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
+    <!-- 툴바 -->
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
@@ -14,9 +15,11 @@
         android:titleTextColor="@android:color/white"
         android:elevation="4dp" />
 
+    <!-- 스크롤 영역 -->
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
         android:background="#C218B3"
         android:padding="24dp">
 
@@ -25,6 +28,33 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
+            <!-- 앱 선택 텍스트 + 화살표 버튼 -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginBottom="12dp">
+
+                <TextView
+                    android:id="@+id/tv_select_app"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="앱을 선택하세요"
+                    android:textSize="16sp"
+                    android:textColor="#FFFFFF"/>
+
+                <ImageButton
+                    android:id="@+id/iv_arrow"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_arrow_right"
+                    android:background="@null"
+                    android:contentDescription="앱 선택" />
+            </LinearLayout>
+
+            <!-- 할 일 입력 -->
             <EditText
                 android:id="@+id/addEditView"
                 android:layout_width="match_parent"
@@ -35,6 +65,7 @@
                 android:padding="12dp"
                 android:layout_marginBottom="20dp"/>
 
+            <!-- 요일 선택 -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -68,43 +99,43 @@
                 <ToggleButton android:id="@+id/day_sun" style="@style/DayButton" android:textOff="일" android:textOn="일"/>
             </LinearLayout>
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="시작 시간"
-                android:textSize="16sp"
-                android:textColor="#000000"
-                android:layout_marginBottom="4dp" />
-
-            <EditText
-                android:id="@+id/startTimeEditText"
+            <!-- 날짜/시간 선택 -->
+            <Button
+                android:id="@+id/btn_pick_start"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="#1D00FF"
-                android:hint="00:00"
-                android:inputType="time"
-                android:textColor="@android:color/white"
-                android:padding="12dp"
-                android:layout_marginBottom="12dp" />
+                android:text="시작 날짜/시간 선택"
+                android:layout_marginBottom="12dp"/>
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="끝나는 시간"
-                android:textSize="16sp"
-                android:textColor="#000000"
-                android:layout_marginBottom="4dp" />
-
-            <EditText
-                android:id="@+id/endTimeEditText"
+            <Button
+                android:id="@+id/btn_pick_end"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="#1D00FF"
-                android:hint="00:00"
-                android:inputType="time"
+                android:text="종료 날짜/시간 선택"
+                android:layout_marginBottom="12dp"/>
+
+            <!-- 선택 결과 표시 -->
+            <TextView
+                android:id="@+id/tv_range_preview"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="선택된 시간: 없음"
                 android:textColor="@android:color/white"
-                android:padding="12dp"
-                android:layout_marginBottom="24dp" />
+                android:textSize="14sp"
+                android:layout_marginTop="8dp"/>
         </LinearLayout>
     </ScrollView>
+
+    <!-- 저장 버튼 -->
+    <Button
+        android:id="@+id/btn_save"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="저장"
+        android:textSize="18sp"
+        android:textColor="#FFFFFF"
+        android:background="#1E88E5"
+        android:layout_marginTop="12dp"
+        android:layout_marginBottom="12dp"
+        android:padding="12dp"/>
 </LinearLayout>
