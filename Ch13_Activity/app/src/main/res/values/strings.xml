@@ -1,3 +1,5 @@
 <resources>
+    <string name="view_rules">규칙 리스트 보기</string>
     <string name="app_name">Ch13_Activity</string>
+    <string name="add_rule">Add Rule</string>
 </resources>

@@ -9,7 +9,7 @@
     <ListView
         android:id="@+id/app_list_view"
         android:layout_width="match_parent"
-        android:layout_height="300dp"
+        android:layout_height="397dp"
         android:divider="#CCCCCC"
-        android:dividerHeight="1dp"/>
+        android:dividerHeight="1dp" />
 </LinearLayout>

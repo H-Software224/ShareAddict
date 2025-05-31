@@ -1,8 +1,13 @@
-package com.example.ch13_activity
+package com.example.ch13_activity.ui
 
+import com.example.ch13_activity.worker.AppMonitorWorker
+import androidx.work.Data
+import androidx.work.ExistingPeriodicWorkPolicy
+import androidx.work.PeriodicWorkRequestBuilder
+import androidx.work.WorkManager
+import java.util.concurrent.TimeUnit
 import android.app.*
 import android.content.Context
-import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
@@ -10,7 +15,14 @@ import android.widget.ArrayAdapter
 import android.widget.ListView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.NotificationCompat
+import androidx.lifecycle.lifecycleScope
+import com.example.ch13_activity.R
+import com.example.ch13_activity.data.AppDatabase
+import com.example.ch13_activity.data.AppRule
 import com.example.ch13_activity.databinding.ActivityAddBinding
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.util.*
 
 class AddActivity : AppCompatActivity() {
@@ -69,6 +81,25 @@ class AddActivity : AppCompatActivity() {
 
         // 저장 버튼 클릭
         binding.btnSave.setOnClickListener {
+            // DB 저장 로직 추가
+            val db = AppDatabase.getDatabase(applicationContext)
+            val rule = AppRule(
+                packageName = selectedAppPackage ?: "",
+                startTimeMillis = startMillis,
+                endTimeMillis = endMillis,
+                appName = binding.tvSelectApp.text.toString().removePrefix("선택됨: "),
+                startHour = Calendar.getInstance().apply { timeInMillis = startMillis }.get(Calendar.HOUR_OF_DAY),
+                startMinute = Calendar.getInstance().apply { timeInMillis = startMillis }.get(Calendar.MINUTE),
+                endHour = Calendar.getInstance().apply { timeInMillis = endMillis }.get(Calendar.HOUR_OF_DAY),
+                endMinute = Calendar.getInstance().apply { timeInMillis = endMillis }.get(Calendar.MINUTE),
+                rules = binding.addEditView.text.toString()
+            )
+
+            lifecycleScope.launch {
+                withContext(Dispatchers.IO) {
+                    db.appRuleDao().insertRule(rule)
+                }
+            }
             val selectedDays = mutableListOf<String>()
             val dayMap = mapOf(
                 binding.dayMon to "월",
@@ -91,6 +122,23 @@ class AddActivity : AppCompatActivity() {
             resultIntent.putStringArrayListExtra("days", ArrayList(selectedDays))
 
             setResult(Activity.RESULT_OK, resultIntent)
+
+            val data = Data.Builder()
+                .putString("selectedApp", selectedAppPackage)
+                .putLong("startTime", startMillis)
+                .putLong("endTime", endMillis)
+                .build()
+
+            val request = PeriodicWorkRequestBuilder<AppMonitorWorker>(15, TimeUnit.MINUTES)
+                .setInputData(data)
+                .build()
+
+            WorkManager.getInstance(this).enqueueUniquePeriodicWork(
+                "AppMonitor",
+                ExistingPeriodicWorkPolicy.REPLACE,
+                request
+            )
+
 
             // ✅ 위반 시간 체크 + 알림 테스트
             checkViolationAndNotify(this, selectedAppPackage ?: "", startMillis, endMillis)
