@@ -11,6 +11,7 @@ import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.widget.ArrayAdapter
 import android.widget.ListView
 import androidx.appcompat.app.AppCompatActivity
@@ -20,6 +21,7 @@ import com.example.ch13_activity.R
 import com.example.ch13_activity.data.AppDatabase
 import com.example.ch13_activity.data.AppRule
 import com.example.ch13_activity.databinding.ActivityAddBinding
+import com.example.ch13_activity.network.RetrofitClient
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -95,11 +97,6 @@ class AddActivity : AppCompatActivity() {
                 rules = binding.addEditView.text.toString()
             )
 
-            lifecycleScope.launch {
-                withContext(Dispatchers.IO) {
-                    db.appRuleDao().insertRule(rule)
-                }
-            }
             val selectedDays = mutableListOf<String>()
             val dayMap = mapOf(
                 binding.dayMon to "월",
@@ -113,16 +110,35 @@ class AddActivity : AppCompatActivity() {
             dayMap.forEach { (btn, label) ->
                 if (btn.isChecked) selectedDays.add(label)
             }
+            val resultIntent = intent.apply {
+                putExtra("title", binding.addEditView.text.toString())
+                putExtra("startDateTime", startMillis)
+                putExtra("endDateTime", endMillis)
+                putExtra("selectedApp", selectedAppPackage)
+                putStringArrayListExtra("days", ArrayList(selectedDays))
+            }
+            lifecycleScope.launch {
+                withContext(Dispatchers.IO) {
+                    db.appRuleDao().insertRule(rule)
+                    try {
+                        val response = RetrofitClient.api.uploadRule(rule)
+                        if (response.isSuccessful) {
+                            val bodyString = response.body()?.string()
+                            Log.d("AddActivity",  "✅ 서버 전송 성공 $bodyString")
+                        } else {
+                            val errorString = response.errorBody()?.string()
+                            Log.e("AddActivity", "❌ 서버 응답 실패: ${response.code()} / $errorString")
+                        }
+                    } catch (e: Exception) {
+                        Log.e("AddActivity", "❌ 서버 요청 실패", e)
+                    }
+                }
 
-            val resultIntent = intent
-            resultIntent.putExtra("title", binding.addEditView.text.toString())
-            resultIntent.putExtra("startDateTime", startMillis)
-            resultIntent.putExtra("endDateTime", endMillis)
-            resultIntent.putExtra("selectedApp", selectedAppPackage)
-            resultIntent.putStringArrayListExtra("days", ArrayList(selectedDays))
-
-            setResult(Activity.RESULT_OK, resultIntent)
-
+                withContext(Dispatchers.Main) {
+                    setResult(Activity.RESULT_OK, resultIntent)
+                    finish()
+                }
+            }
             val data = Data.Builder()
                 .putString("selectedApp", selectedAppPackage)
                 .putLong("startTime", startMillis)
@@ -142,8 +158,6 @@ class AddActivity : AppCompatActivity() {
 
             // ✅ 위반 시간 체크 + 알림 테스트
             checkViolationAndNotify(this, selectedAppPackage ?: "", startMillis, endMillis)
-
-            finish()
         }
     }
 
