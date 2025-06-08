@@ -6,6 +6,7 @@
     android:id="@+id/mainLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#88c283"
     tools:context=".MainActivity">
 
     <!-- 규칙 리스트 보기 버튼 -->
@@ -39,6 +40,7 @@
             android:layout_width="311dp"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="24dp"
+            android:background="#88c283"
             android:layout_marginTop="36dp"
             android:text="@string/view_rules" />
 

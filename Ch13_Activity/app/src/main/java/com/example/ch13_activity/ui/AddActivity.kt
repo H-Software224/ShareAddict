@@ -186,18 +186,14 @@ class AddActivity : AppCompatActivity() {
         if (now in start..end) {
             val manager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
             val channelId = "violation-channel"
-
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                val channel = NotificationChannel(
-                    channelId,
-                    "Violation Channel",
-                    NotificationManager.IMPORTANCE_HIGH
-                ).apply {
-                    description = "앱 미사용 시간대 위반 알림"
-                }
-                manager.createNotificationChannel(channel)
+            val channel = NotificationChannel(
+                channelId,
+                "Violation Channel",
+                NotificationManager.IMPORTANCE_HIGH
+            ).apply {
+                description = "앱 미사용 시간대 위반 알림"
             }
-
+            manager.createNotificationChannel(channel)
             val builder = NotificationCompat.Builder(context, channelId)
                 .setSmallIcon(R.drawable.small) // 🔔 아이콘 반드시 필요!
                 .setContentTitle("사용 금지 앱 감지됨")

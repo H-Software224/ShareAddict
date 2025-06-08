@@ -4,7 +4,7 @@
     <!-- 선택된 상태 -->
     <item android:state_checked="true">
         <shape android:shape="rectangle">
-            <solid android:color="#8800AA" /> <!-- 진한 보라색 -->
+            <solid android:color="#18aaa0" /> <!-- 청록색 -->
             <corners android:radius="12dp" />
         </shape>
     </item>
@@ -12,7 +12,7 @@
     <!-- 비선택 상태 -->
     <item>
         <shape android:shape="rectangle">
-            <solid android:color="#F4B6E2" /> <!-- 연한 분홍 -->
+            <solid android:color="#6bf41c" /> <!-- 풀색 -->
             <corners android:radius="12dp" />
         </shape>
     </item>

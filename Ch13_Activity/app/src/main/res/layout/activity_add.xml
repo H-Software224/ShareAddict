@@ -10,7 +10,7 @@
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:background="?attr/colorPrimary"
+        android:background="#c1c20e"
         android:title="할 일 추가"
         android:titleTextColor="@android:color/white"
         android:elevation="4dp" />
@@ -20,7 +20,7 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:background="#C218B3"
+        android:background="#88c283"
         android:padding="24dp">
 
         <LinearLayout
@@ -131,11 +131,11 @@
         android:id="@+id/btn_save"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="저장"
-        android:textSize="18sp"
-        android:textColor="#FFFFFF"
-        android:background="#1E88E5"
         android:layout_marginTop="12dp"
         android:layout_marginBottom="12dp"
-        android:padding="12dp"/>
+        android:background="#1E50E5"
+        android:padding="12dp"
+        android:text="저장"
+        android:textColor="#FFFFFF"
+        android:textSize="18sp" />
 </LinearLayout>

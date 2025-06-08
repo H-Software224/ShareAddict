@@ -4,7 +4,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 object RetrofitClient {
-    private const val BASE_URL = "http://3.38.176.254:3000/"  // 👉 HTTPS 권장
+    private const val BASE_URL = "http://3.38.145.154:3000/"  // 👉 HTTPS 권장
 
     val api: AppRuleApi by lazy {
         Retrofit.Builder()
