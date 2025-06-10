@@ -12,6 +12,7 @@ import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.ListView
 import androidx.appcompat.app.AppCompatActivity
@@ -45,44 +46,60 @@ class AddActivity : AppCompatActivity() {
         setSupportActionBar(binding.toolbar)
 
         // 날짜 및 시간 선택
-        binding.btnPickStart.setOnClickListener { pickDateTime(true) }
-        binding.btnPickEnd.setOnClickListener { pickDateTime(false) }
+        binding.btnPickStart.setOnClickListener { showDateTimePickerWithLoading(true) }
+        binding.btnPickEnd.setOnClickListener { showDateTimePickerWithLoading(false) }
 
         // 앱 선택 버튼 클릭
         binding.ivArrow.setOnClickListener {
+            binding.progressBar.visibility = View.VISIBLE
             val pm = packageManager
-            val apps = pm.getInstalledApplications(PackageManager.GET_META_DATA)
-                .map {
-                    AppInfo(
-                        label = pm.getApplicationLabel(it).toString(),
-                        packageName = it.packageName
-                    )
-                }.sortedBy { it.label }
 
-            val view = layoutInflater.inflate(R.layout.dialog_app_list, null)
-            val listView = view.findViewById<ListView>(R.id.app_list_view)
-            val labels = apps.map { it.label }
+            lifecycleScope.launch(Dispatchers.Default) {
+                val apps = pm.getInstalledApplications(PackageManager.GET_META_DATA)
+                    .filter { appInfo ->
+                        pm.getLaunchIntentForPackage(appInfo.packageName) != null &&
+                                pm.getApplicationLabel(appInfo).isNotBlank()
+                    }
+                    .map {
+                        AppInfo(
+                            label = pm.getApplicationLabel(it).toString(),
+                            packageName = it.packageName
+                        )
+                    }
+                    .sortedBy{it.label}
+                withContext(Dispatchers.Main) {
+                    val view = layoutInflater.inflate(R.layout.dialog_app_list, null)
+                    val listView = view.findViewById<ListView>(R.id.app_list_view)
+                    val labels = apps.map {it.label}
 
-            val adapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, labels)
-            listView.adapter = adapter
+                    val adapter = ArrayAdapter(this@AddActivity, android.R.layout.simple_list_item_1, labels)
+                    listView.adapter = adapter
 
-            val dialog = AlertDialog.Builder(this)
-                .setTitle("앱을 선택하세요")
-                .setView(view)
-                .create()
+                    val dialog = AlertDialog.Builder(this@AddActivity)
+                        .setTitle("앱을 선택하세요")
+                        .setView(view)
+                        .create()
 
-            listView.setOnItemClickListener { _, _, position, _ ->
-                val selectedApp = apps[position]
-                selectedAppPackage = selectedApp.packageName
-                binding.tvSelectApp.text = "선택됨: ${selectedApp.label}"
-                dialog.dismiss()
+                    listView.setOnItemClickListener { _, _, position, _ ->
+                        val selectedApp = apps[position]
+                        selectedAppPackage = selectedApp.packageName
+                        binding.tvSelectApp.text = "선택됨: ${selectedApp.label}"
+                        dialog.dismiss()
+                    }
+
+                    dialog.setOnShowListener {
+                        binding.progressBar.visibility = View.GONE
+                    }
+
+                    dialog.show()
+                }
             }
-
-            dialog.show()
         }
 
         // 저장 버튼 클릭
         binding.btnSave.setOnClickListener {
+
+            binding.progressBar.visibility = View.VISIBLE
             // DB 저장 로직 추가
             val db = AppDatabase.getDatabase(applicationContext)
             val rule = AppRule(
@@ -135,6 +152,7 @@ class AddActivity : AppCompatActivity() {
                 }
 
                 withContext(Dispatchers.Main) {
+                    binding.progressBar.visibility = View.GONE
                     setResult(Activity.RESULT_OK, resultIntent)
                     finish()
                 }
@@ -162,12 +180,17 @@ class AddActivity : AppCompatActivity() {
     }
 
     // 날짜 및 시간 선택
-    private fun pickDateTime(isStart: Boolean) {
-        // 사용자 직접 선택 유도: 현재 시간 자동 설정 없음
-        DatePickerDialog(this, { _, year, month, day ->
+    private fun showDateTimePickerWithLoading(isStart: Boolean) {
+        binding.progressBar.visibility = View.VISIBLE
+        val now = Calendar.getInstance()
+        val year = now.get(Calendar.YEAR)
+        val month = now.get(Calendar.MONTH)
+        val day = now.get(Calendar.DAY_OF_MONTH)
+
+        DatePickerDialog(this, { _, y, m, d ->
             TimePickerDialog(this, { _, hour, minute ->
                 val cal = Calendar.getInstance()
-                cal.set(year, month, day, hour, minute)
+                cal.set(y, m, d, hour, minute)
 
                 if (isStart) {
                     startMillis = cal.timeInMillis
@@ -176,9 +199,12 @@ class AddActivity : AppCompatActivity() {
                     endMillis = cal.timeInMillis
                     binding.tvRangePreview.append("\n종료: ${Date(endMillis)}")
                 }
-            }, 12, 0, true).show()
-        }, 2025, 0, 1).show()
+
+                binding.progressBar.visibility = View.GONE
+            }, now.get(Calendar.HOUR_OF_DAY), now.get(Calendar.MINUTE), true).show()
+        },year, month, day).show()
     }
+
 
     // ✅ 위반 시간에 알림 발생
     private fun checkViolationAndNotify(context: Context, selectedPackage: String, start: Long, end: Long) {
