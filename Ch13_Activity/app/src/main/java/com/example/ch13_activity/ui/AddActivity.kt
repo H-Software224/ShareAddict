@@ -13,11 +13,13 @@ import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.ListView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.NotificationCompat
 import androidx.lifecycle.lifecycleScope
+import androidx.work.OneTimeWorkRequestBuilder
 import com.example.ch13_activity.R
 import com.example.ch13_activity.data.AppDatabase
 import com.example.ch13_activity.data.AppRule
@@ -35,6 +37,8 @@ class AddActivity : AppCompatActivity() {
     private var startMillis: Long = 0L
     private var endMillis: Long = 0L
     private var selectedAppPackage: String? = null
+
+    private var selectedRepeatOption: String = "반복 안함"
 
     data class AppInfo(val label: String, val packageName: String)
 
@@ -100,6 +104,8 @@ class AddActivity : AppCompatActivity() {
         binding.btnSave.setOnClickListener {
 
             binding.progressBar.visibility = View.VISIBLE
+
+            val selectedRepeatOption = binding.spinnerRepeat.selectedItem.toString()
             // DB 저장 로직 추가
             val db = AppDatabase.getDatabase(applicationContext)
             val rule = AppRule(
@@ -111,7 +117,8 @@ class AddActivity : AppCompatActivity() {
                 startMinute = Calendar.getInstance().apply { timeInMillis = startMillis }.get(Calendar.MINUTE),
                 endHour = Calendar.getInstance().apply { timeInMillis = endMillis }.get(Calendar.HOUR_OF_DAY),
                 endMinute = Calendar.getInstance().apply { timeInMillis = endMillis }.get(Calendar.MINUTE),
-                rules = binding.addEditView.text.toString()
+                rules = binding.addEditView.text.toString(),
+                repeatType = selectedRepeatOption
             )
 
             val selectedDays = mutableListOf<String>()
@@ -161,22 +168,49 @@ class AddActivity : AppCompatActivity() {
                 .putString("selectedApp", selectedAppPackage)
                 .putLong("startTime", startMillis)
                 .putLong("endTime", endMillis)
+                .putString("repeatType", selectedRepeatOption)
                 .build()
 
-            val request = PeriodicWorkRequestBuilder<AppMonitorWorker>(15, TimeUnit.MINUTES)
-                .setInputData(data)
-                .build()
 
-            WorkManager.getInstance(this).enqueueUniquePeriodicWork(
-                "AppMonitor",
-                ExistingPeriodicWorkPolicy.REPLACE,
-                request
-            )
+            val repeatInterval = when (selectedRepeatOption) {
+                "매일" -> 1L to TimeUnit.DAYS
+                "매주" -> 7L to TimeUnit.DAYS
+                "매월" -> 30L to TimeUnit.DAYS
+                "매년" -> 365L to TimeUnit.DAYS
+                else -> null
+            }
+
+            if (repeatInterval != null) {
+                val (interval, timeUnit) = repeatInterval
+                val request = PeriodicWorkRequestBuilder<AppMonitorWorker>(interval, timeUnit)
+                    .setInputData(data)
+                    .build()
+                WorkManager.getInstance(this).enqueueUniquePeriodicWork(
+                    "AppMonitor",
+                    ExistingPeriodicWorkPolicy.REPLACE,
+                    request
+                )
+            } else {
+                val oneTimeRequest = OneTimeWorkRequestBuilder<AppMonitorWorker>()
+                    .setInitialDelay(0, TimeUnit.SECONDS)
+                    .setInputData(data)
+                    .build()
+                WorkManager.getInstance(this).enqueue(oneTimeRequest)
+            }
 
 
             // ✅ 위반 시간 체크 + 알림 테스트
             checkViolationAndNotify(this, selectedAppPackage ?: "", startMillis, endMillis)
         }
+
+        binding.spinnerRepeat.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
+                selectedRepeatOption = parent.getItemAtPosition(position).toString()
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>) {}
+        }
+
     }
 
     // 날짜 및 시간 선택
