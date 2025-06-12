@@ -20,7 +20,7 @@ router.post('/post_violations', async (req, res) => {
         const postedResults = [];
 
         for (const rule of rules) {
-            const postMessage = `앱: ${rule.app_name} 시간대 시작: ${rule.start_hour}:${rule.start_minute} 종료: ${rule.end_hour}:${rule.end_minute} 규칙: ${rule.rule} 위반 유무: ${rule.violation ? "위반" : "정상"}`;
+            const postMessage = `비상! 앱 미사용 규칙을 어겼습니다! 규칙을 실천하세요! 그러면 어제보다 나은 내일이 될 것입니다! 위반한 규칙은 다음과 같습니다. 위반 규칙: [앱: ${rule.app_name} 시간대 시작: ${rule.start_hour}:${rule.start_minute} 종료: ${rule.end_hour}:${rule.end_minute} 규칙: ${rule.rule} 위반 유무: ${rule.violation ? "위반" : "정상"}`;
             const scheduleDate = new Date().toISOString().split(".")[0] + "Z";
             const response = await.fetch("https://api.ayrshare.com/api/post", {
                 method: "POST",
@@ -31,7 +31,7 @@ router.post('/post_violations', async (req, res) => {
                 body: JSON.stringify({
                     post: postMessage,
                     platforms: ["facebook", "instagram"],
-                    mediaUrls: ["https://search.pstatic.net/common/?src=http%3A%2F%2Fblogfiles.naver.net%2FMjAyNTA1MDhfMSAg%2FMDAxNzQ2Njg2NDI5ODQy.yk3R0vuDGWZNttHBHTq0WV4PKDokkxMn1FBJ9cf3CyUg.n06O2_b720YxEvlSzjqSuseUP3r0Na_CIzLWVnjRoGkg.PNG%2F%25C1%25D6%25C0%25C7%25BB%25E7%25C7%25D7.png&type=a340"],
+                    mediaUrls: ["https://my-instagram-caution.s3.ap-northeast-2.amazonaws.com/caution.png"],
                     scheduleDate: scheduleDate
                 }),
             });

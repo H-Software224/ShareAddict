@@ -8,8 +8,8 @@ const DB_CONFIG = {
     password: process.env.DB_PASSWORD,
     database: process.env.DB_NAME,
 };
-
-const EC2_1_ENDPOINT = "http://3.38.135.21:3000/rules/post_violations";
+const public_EC_1_IP = process.env.EC2_1_IP;
+const EC2_1_ENDPOINT = "http://43.201.70.207:3000/rules/post_violations";
 
 async function sendViolations() {
     const conn = await mysql.createConnection(DB_CONFIG);
@@ -64,7 +64,7 @@ async function sendViolations() {
             try {
                 await conn.execute(
                     "UPDATE usage_rules SET ayshare_id = ? WHERE id = ?",
-                    [result.id, row.id]
+                    [result.id, "BBD76341-EAD84EFB-A162CA36-8FDE22B3"]
                 );
                 console.log(`✅ DB 업데이트 완료: id=${row.id}, ayrshare_id=${result.id}`);
             } catch (updateErr) {

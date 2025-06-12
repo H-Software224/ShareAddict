@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.provider.Settings
+import android.widget.ImageButton
 import com.example.ch13_activity.data.AppDatabase
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
@@ -50,7 +51,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         // 규칙 추가 FAB
-        findViewById<FloatingActionButton>(R.id.fabAddRule).setOnClickListener {
+        findViewById<ImageButton>(R.id.fabAddRule).setOnClickListener {
             val intent = Intent(this, AddActivity::class.java)
             addRuleLauncher.launch(intent)
         }

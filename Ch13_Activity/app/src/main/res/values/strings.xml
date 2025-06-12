@@ -9,4 +9,38 @@
         <item>매월</item>
         <item>매년</item>
     </string-array>
+    <string name="tap_plus_to">
+        새로운 규칙을 생성하세요.
+    </string>
+    <!-- strings.xml -->
+    <string name="add_your_ta">
+        Add your task
+    </string>
+    <!-- strings.xml -->
+    <string name="today">
+        Today
+    </string>
+    <string name="today_mon_2">
+        Today Mon 20 Jul 2022
+    </string>
+    <!-- strings.xml -->
+    <string name="best_platfo">
+        Best platform for creating to-do lists
+    </string>
+    <!-- strings.xml -->
+    <string name="eg_meeting_">
+        eg : Meeting with client
+    </string>
+    <!-- strings.xml -->
+    <string name="description">
+        Description
+    </string>
+    <!-- strings.xml -->
+    <string name="description_2">
+        Description
+    </string>
+    <!-- strings.xml -->
+    <string name="add_time">
+        Add Time
+    </string>
 </resources>

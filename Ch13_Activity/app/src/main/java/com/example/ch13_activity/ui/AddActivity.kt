@@ -122,6 +122,7 @@ class AddActivity : AppCompatActivity() {
             )
 
             val selectedDays = mutableListOf<String>()
+            /*
             val dayMap = mapOf(
                 binding.dayMon to "월",
                 binding.dayTue to "화",
@@ -134,6 +135,7 @@ class AddActivity : AppCompatActivity() {
             dayMap.forEach { (btn, label) ->
                 if (btn.isChecked) selectedDays.add(label)
             }
+            */
             val resultIntent = intent.apply {
                 putExtra("title", binding.addEditView.text.toString())
                 putExtra("startDateTime", startMillis)

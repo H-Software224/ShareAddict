@@ -1,47 +1,53 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/mainLayout"
+    android:id="@+id/homepage_cr"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#88c283"
+    android:clipToOutline="true"
     tools:context=".MainActivity">
-
     <!-- 규칙 리스트 보기 버튼 -->
 
     <LinearLayout
         android:id="@+id/layoutAppSummary"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="400dp"
         android:orientation="vertical"
+        android:translationY="100dp"
         android:padding="16dp"
-        app:layout_constraintTop_toBottomOf="@id/btnRuleList"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
+        <!-- Auto layout, grids, variables, and unit scale are not yet supported -->
+        <RelativeLayout
+            android:layout_width="300dp"
+            android:layout_height="100dp">
+            <TextView
+                android:id="@+id/tvAppSummaryTitle"
+                android:layout_width="350dp"
+                android:layout_height="wrap_content"
+                android:text="📋 설정된 앱 목록"
+                android:textSize="16sp"
+                android:textAlignment="center"
+                android:textColor="#FFFFFF"
+                android:background="@drawable/rectangle_9"
+                android:textStyle="bold" />
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerViewAppNames"
+                android:layout_width="match_parent"
+                android:layout_height="150dp"
+                android:translationY="40dp"
+                tools:listitem="@layout/item_app_name" />
+        </RelativeLayout>
 
-        <TextView
-            android:id="@+id/tvAppSummaryTitle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="📋 설정된 앱 목록:"
-            android:textSize="16sp"
-            android:textStyle="bold" />
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recyclerViewAppNames"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            tools:listitem="@layout/item_app_name" />
-
-        <Button
+        <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btnRuleList"
             android:layout_width="311dp"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="24dp"
-            android:background="#88c283"
+            android:background="@drawable/rectangle_9"
             android:layout_marginTop="36dp"
+            android:textColor="#FFFFFF"
             android:text="@string/view_rules" />
 
         <androidx.recyclerview.widget.RecyclerView
@@ -52,20 +58,183 @@
             android:clipToPadding="false" />
     </LinearLayout>
 
+    <RelativeLayout
+        android:id="@+id/card_"
+        android:layout_width="327dp"
+        android:layout_height="148dp"
+        android:layout_alignParentLeft="true"
+        android:layout_marginLeft="24dp"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="155dp"
+        android:clipToOutline="true"
+        android:background="@drawable/card_"
+        android:elevation="40dp"
+        android:translationY="400dp">
+        <!-- Auto layout, grids, variables, and unit scale are not yet supported -->
+        <View
+            android:id="@+id/rectangle_9"
+            android:layout_width="327dp"
+            android:layout_height="36dp"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:background="@drawable/rectangle_9"
+            />
+        <!-- Auto layout, grids, variables, and unit scale are not yet supported -->
+        <RelativeLayout
+            android:id="@+id/frame_104"
+            android:layout_width="295dp"
+            android:layout_height="80dp"
+            android:layout_alignParentLeft="true"
+            android:layout_marginLeft="16dp"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="52dp">
+
+            <!-- Auto layout, grids, variables, and unit scale are not yet supported -->
+            <RelativeLayout
+                xmlns:android="http://schemas.android.com/apk/res/android"
+                android:id="@+id/frame_13"
+                android:layout_width="237dp"
+                android:layout_height="28dp">
+                <!-- Auto layout, grids, variables, and unit scale are not yet supported -->
+                <RelativeLayout
+                    xmlns:android="http://schemas.android.com/apk/res/android"
+                    android:contentDescription="@string/add_rule"
+                    android:src="@android:drawable/ic_input_add"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    android:layout_width="28dp"
+                    android:layout_height="28dp">
+                    <!-- Auto layout, grids, variables, and unit scale are not yet supported -->
+                    <ImageButton
+                        android:id="@+id/fabAddRule"
+                        android:layout_width="23.33dp"
+                        android:layout_height="23.33dp"
+                        android:contentDescription="@string/add_rule"
+                        android:layout_alignParentLeft="true"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        android:layout_marginLeft="2.33dp"
+                        android:layout_alignParentTop="true"
+                        android:layout_marginTop="2.33dp"
+                        android:background="@drawable/plus"
+                        />
+
+                </RelativeLayout>
+
+            </RelativeLayout>
+            <!-- Auto layout, grids, variables, and unit scale are not yet supported -->
+            <RelativeLayout
+                android:id="@+id/frame_15"
+                android:layout_width="295dp"
+                android:layout_height="50dp"
+                android:translationX="30dp">
+                <!-- Auto layout, grids, variables, and unit scale are not yet supported -->
+                <View
+                    android:id="@+id/vector_2"
+                    android:layout_width="295dp"
+                    android:layout_height="0dp"
+                    android:background="@drawable/vector_2"
+                    />
+
+                <!-- Auto layout, grids, variables, and unit scale are not yet supported -->
+                <RelativeLayout
+                    android:id="@+id/frame_14"
+                    android:layout_width="295dp"
+                    android:layout_height="500dp">
+
+                    <!-- Auto layout, grids, variables, and unit scale are not yet supported -->
+                    <TextView
+                        android:id="@+id/add_your_ta"
+                        android:layout_width="69dp"
+                        android:layout_height="20dp"
+                        android:text="@string/add_your_ta"
+                        android:textSize="10sp"
+                        android:textAppearance="@style/add_your_ta"
+                        android:lineSpacingExtra="6sp"
+                        android:translationY="20dp"
+                        android:gravity="top"
+                        />
+                    <!-- Auto layout, grids, variables, and unit scale are not yet supported -->
+                    <TextView
+                        android:id="@+id/today_mon_2"
+                        android:layout_width="125dp"
+                        android:layout_height="20dp"
+                        android:text="@string/today_mon_2"
+                        android:textAppearance="@style/today_mon_2"
+                        android:lineSpacingExtra="6sp"
+                        android:translationY="50dp"
+                        android:gravity="top"
+                        />
+
+                    <TextView
+                        android:id="@+id/tap_plus_to"
+                        android:layout_width="197dp"
+                        android:layout_height="20dp"
+                        android:gravity="top"
+                        android:lineSpacingExtra="1sp"
+                        android:text="@string/tap_plus_to"
+                        android:textAppearance="@style/tap_plus_to"
+                        android:translationY="-0.45sp" />
+
+                </RelativeLayout>
+
+            </RelativeLayout>
+
+        </RelativeLayout>
+    </RelativeLayout>
+    <!-- Auto layout, grids, variables, and unit scale are not yet supported -->
+    <RelativeLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/title"
+        android:layout_width="327dp"
+        android:layout_height="57dp"
+        android:layout_alignParentLeft="true"
+        android:layout_marginLeft="24dp"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="68dp"
+        android:translationY="-50dp">
+        <!-- Auto layout, grids, variables, and unit scale are not yet supported -->
+        <RelativeLayout
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/create_task"
+            android:layout_width="220dp"
+            android:layout_height="57dp">
+            <!-- Auto layout, grids, variables, and unit scale are not yet supported -->
+            <TextView
+                android:id="@+id/today"
+                android:layout_width="400dp"
+                android:layout_height="30dp"
+                android:text="안녕? 앱 규칙 세우자"
+                android:textAppearance="@style/today"
+                android:gravity="top"
+                />
+            <!-- Auto layout, grids, variables, and unit scale are not yet supported -->
+            <TextView
+                android:id="@+id/best_platfo"
+                android:layout_width="209dp"
+                android:layout_height="20dp"
+                android:text="오늘의 할 일"
+                android:textAppearance="@style/best_platfo"
+                android:lineSpacingExtra="3sp"
+                android:translationY="30dp"
+                android:gravity="center_horizontal|top"
+                />
+        </RelativeLayout>
+        <!-- Auto layout, grids, variables, and unit scale are not yet supported -->
+        <RelativeLayout
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/iconly_bold"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:translationX="300dp"
+            android:background="@drawable/setting"
+            >
+        </RelativeLayout>
 
 
-    <!-- RecyclerView for todo rules -->
+    </RelativeLayout>
 
-    <!-- Floating Action Button: 규칙 추가 -->
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fabAddRule"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:contentDescription="@string/add_rule"
-        android:src="@android:drawable/ic_input_add"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_margin="16dp"
-        app:tint="@android:color/white" />
+</RelativeLayout>
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+
+
