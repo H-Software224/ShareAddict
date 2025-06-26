@@ -85,4 +85,4 @@
   - 인스타 계정에서 “누군가가 Instagram 게시판을 공유하였습니다!” 라는 알림으로 알려주는 기능도 필요하다. 알림을 이용하여 사람들이 한눈에 알림에 나와 있는 게시판을 쉽게 찾을 수 있도록 돕게 해주는 효과가 있다.
 
 ## 🎥 데모 영상
-
+[![demo](https://github.com/user-attachments/assets/a5e41ad3-44d7-44b0-a647-dc3685193d33)](https://youtube.com/shorts/fcVlF-4J47s?si=5divyUDJ9P7LEvoG)
